@@ -1,4 +1,4 @@
-/* jquery-toggler-1.1.js
+/*! jquery-toggler-1.1.js
  *
  * Authored by: Cory Dorning & Brett Metzger
  * Website: http://corydorning.com/projects/jquery-toggler
