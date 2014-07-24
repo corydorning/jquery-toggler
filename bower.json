@@ -1,0 +1,22 @@
+{
+  "name": "jquery-toggler",
+  "main": "jquery-toggler.js",
+  "version": "1.0.0",
+  "homepage": "https://github.com/corydorning/jquery-toggler",
+  "authors": [
+    "Cory Dorning <cory@dorning.me>"
+  ],
+  "description": "Toggler allows you to toggle the display of content.",
+  "keywords": [
+    "jquery",
+    "toggler"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
