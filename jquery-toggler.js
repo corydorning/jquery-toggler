@@ -1,4 +1,4 @@
-/*! jquery-toggler-1.1.js
+/*! jquery-toggler.js
  *
  * Authored by: Cory Dorning & Brett Metzger
  * Website: http://corydorning.com/projects/jquery-toggler
@@ -7,7 +7,7 @@
  * Dependencies: jQuery v1.8+
  *
  * Last modified by: Cory Dorning
- * Last modified on: 11/04/2013
+ * Last modified on: 10/02/2014
  *
  * Toggler allows you to toggle the display of content
  *
@@ -26,32 +26,40 @@
         duration: 400,
         event: 'click',  // sets the default event type to click
         slide: true,
-        target: null  // sets the default target to null, must be set at init
+        target: null,  // sets the default target to null, must be set at init
+        toggleClass:  null // sets classes you want to toggle on the trigger
       },
 
-      // original jQuery object
+    // original jQuery object
       $sel = this,
 
-      dataOptions = {
-        callback: $sel.data('callback') ? window[$sel.data('callback')] || $.ddui.helpers.stringToMethod($sel.data('callback')) : function(){},
-        duration: $sel.data('duration'),
-        event: $sel.data('event'),  // sets the default event type to click
-        slide: $sel.data('slide'),
-        target: $sel.data('target') || $sel.attr('href')  // sets the default target to null, must be set at init
-      },
-
     // overwrite 'defaults' with those passed via 'options'
-      settings = $.extend(defaults, options, dataOptions);
+      settings = $.extend(defaults, options);
 
 
     // loop through each instance and maintain chainability
     return $sel.each(function() {
       // current, single instance of $sel
-      var $this = $(this);
+      var $this = $(this),
+        dataOptions = {
+          callback: $this.data('callback') ? window[$this.data('callback')] || $.ddui.helpers.stringToMethod($this.data('callback')) : settings.callback,
+          duration: $this.data('duration') || settings.duration,
+          event: $this.data('event') ||settings.event,  // sets the default event type to click
+          slide: $this.data('slide') || settings.slide,
+          target: $this.data('target') || $this.attr('href') || settings.target,  // sets the default target to null, must be set at init
+          toggleClass: $this.data('toggle-class') || settings.toggleClass  // sets classes you want to toggle on the trigger
+        }
+        ;
 
       // create event handler for each $this
-      $this.on(settings.event, function(e) {
-        $(settings.target)[settings.slide ? 'slideToggle' : 'toggle'] (settings.duration, settings.callback);
+      $this.off(dataOptions.event).on(dataOptions.event, function(e) {
+        var classToggle = dataOptions.toggleClass;
+
+        if (classToggle) {
+          $(this).toggleClass(classToggle);
+        }
+
+        $(dataOptions.target)[dataOptions.slide ? 'slideToggle' : 'toggle'] (dataOptions.duration, dataOptions.callback);
 
         e.preventDefault();
       });
