@@ -7,7 +7,7 @@
  * Dependencies: jQuery v1.8+
  *
  * Last modified by: Cory Dorning
- * Last modified on: 10/02/2014
+ * Last modified on: 01/29/2015
  *
  * Toggler allows you to toggle the display of content
  *
@@ -41,28 +41,43 @@
     return $sel.each(function() {
       // current, single instance of $sel
       var $this = $(this),
-        dataOptions = {
-          callback: $this.data('callback') ? window[$this.data('callback')] || $.ddui.helpers.stringToMethod($this.data('callback')) : settings.callback,
-          duration: $this.data('duration') || settings.duration,
-          event: $this.data('event') ||settings.event,  // sets the default event type to click
-          slide: $this.data('slide') || settings.slide,
-          target: $this.data('target') || $this.attr('href') || settings.target,  // sets the default target to null, must be set at init
-          toggleClass: $this.data('toggle-class') || settings.toggleClass  // sets classes you want to toggle on the trigger
-        }
-        ;
+          dataOptions = {
+            callback: $this.data('callback') ? window[$this.data('callback')] || $.ddui.helpers.stringToMethod($this.data('callback')) : settings.callback,
+            duration: $this.data('duration') || settings.duration,
+            event: $this.data('event') || $this.is(':radio') ? 'change' : settings.event,  // sets the default event type to click
+            slide: $this.data('slide') || settings.slide,
+            target: $this.data('target') || $this.attr('href') || settings.target,  // sets the default target to null, must be set at init
+            toggleClass: $this.data('toggle-class') || settings.toggleClass  // sets classes you want to toggle on the trigger
+          };
+
 
       // create event handler for each $this
-      $this.off(dataOptions.event).on(dataOptions.event, function(e) {
-        var classToggle = dataOptions.toggleClass;
+      $this
+        .off(dataOptions.event)
+        .on(dataOptions.event, function(e) {
+          var classToggle = dataOptions.toggleClass;
 
-        if (classToggle) {
-          $(this).toggleClass(classToggle);
-        }
+          if (classToggle) {
+            $this.toggleClass(classToggle);
+          }
 
-        $(dataOptions.target)[dataOptions.slide ? 'slideToggle' : 'toggle'] (dataOptions.duration, dataOptions.callback);
+          // toggle content
+          $(dataOptions.target)[dataOptions.slide ? 'slideToggle' : 'toggle'] (dataOptions.duration, dataOptions.callback);
 
-        e.preventDefault();
-      });
+          if($this.is(':radio')) {
+            var checkedClass = 'toggler-checked',
+                prevCheckedContent = $('[name="' + this.name + '"]').filter('.' + checkedClass).removeClass(checkedClass).data('target');
+
+            $(prevCheckedContent)[dataOptions.slide ? 'slideUp' : 'hide'] (dataOptions.duration, dataOptions.callback);
+            $this.addClass(checkedClass);
+          } else {
+            e.preventDefault();
+          }
+        });
+
+      if($this.is(':checked')) {
+        $this.trigger(dataOptions.event);
+      }
 
     });
 
